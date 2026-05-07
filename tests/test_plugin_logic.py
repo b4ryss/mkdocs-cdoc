@@ -1,6 +1,9 @@
 import pytest
 import os
 from mkdocs_cdoc.parser import parse_file_regex, SymbolKind, clean_comment, gtkdoc_to_rst
+from mkdocs_cdoc.renderer import RenderConfig, render_doc, anchor_id
+
+# --- PARSER TESTS (Backend Logic) ---
 
 # TC-001: Valid Plugin Initialization (Logic Check)
 def test_plugin_kind_mapping():
@@ -39,6 +42,18 @@ def test_gtkdoc_to_rst_conversion():
     
     assert ":const:`MY_CONST`" in converted
     assert ":func:`function_name`" in converted
+
+# TC-005: Struct and Member Extraction
+def test_struct_parsing_logic():
+    """Verify that the regex parser can identify C structs."""
+    content = "/** Point structure */\nstruct Point { int x; int y; };"
+    with open("temp_struct.h", "w") as f:
+        f.write(content)
+    try:
+        results = parse_file_regex("temp_struct.h")
+        assert any(r.kind == SymbolKind.STRUCT for r in results)
+    finally:
+        if os.path.exists("temp_struct.h"): os.remove("temp_struct.h")
 
 # Integration Style Test: Parsing a sample C++ string
 def test_regex_parser_logic():
