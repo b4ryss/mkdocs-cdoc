@@ -29,7 +29,6 @@ jobs:
       # 2. Step: Static Analysis
       - name: Static Analysis (Linting)
         run: |
-          # || true kullanarak hataların pipeline'ı durdurmasını engelliyoruz
           flake8 mkdocs_cdoc/ || true
           pylint mkdocs_cdoc/ --fail-under=1 || true
           mypy mkdocs_cdoc/ --ignore-missing-imports || true
@@ -37,7 +36,6 @@ jobs:
       # 3. Step: Unit & Integration Tests
       - name: Run Unit & Integration tests
         run: |
-          # Eğer tests klasörü boşsa hata vermemesi için || echo kullanıyoruz
           pytest tests/ || echo "No tests found yet"
 
       # 4. Step: Coverage Report
@@ -48,5 +46,4 @@ jobs:
       # 5. Step: Build Validation
       - name: Build validation
         run: |
-          # Eğer example_docs yoksa ana dizindeki mkdocs.yml'ı dene
           mkdocs build || echo "Build failed but continuing for report"
