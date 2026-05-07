@@ -63,6 +63,20 @@ def test_junk_comment_cleaning():
     assert "IMPORTANT" in cleaned
 
 
+# TC-007: C++ Macro and Macro Function Detection
+def test_macro_parsing_logic():
+    """Verify the regex parser can identify macros."""
+    content = "#define MAX_VAL 1024\n#define LOG(m) printf(m)"
+    with open("temp_macro.h", "w") as f:
+        f.write(content)
+    try:
+        results = parse_file_regex("temp_macro.h")
+        names = [r.name for r in results]
+        assert "MAX_VAL" in names and "LOG" in names
+    finally:
+        if os.path.exists("temp_macro.h"): os.remove("temp_macro.h")
+
+
 # Integration Style Test: Parsing a sample C++ string
 def test_regex_parser_logic():
     """Test the regex backend's ability to extract function signatures and names."""
