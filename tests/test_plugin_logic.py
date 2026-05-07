@@ -77,6 +77,20 @@ def test_macro_parsing_logic():
         if os.path.exists("temp_macro.h"): os.remove("temp_macro.h")
 
 
+# TC-008: Typedef and Enum Recognition
+def test_typedef_enum_logic():
+    """Ensure that typedefs and enums are identified correctly."""
+    content = "typedef int my_int;\nenum Status { OK };"
+    with open("temp_types.h", "w") as f:
+        f.write(content)
+    try:
+        results = parse_file_regex("temp_types.h")
+        kinds = [r.kind for r in results]
+        assert SymbolKind.TYPEDEF in kinds and SymbolKind.ENUM in kinds
+    finally:
+        if os.path.exists("temp_types.h"): os.remove("temp_types.h")
+
+
 # Integration Style Test: Parsing a sample C++ string
 def test_regex_parser_logic():
     """Test the regex backend's ability to extract function signatures and names."""
