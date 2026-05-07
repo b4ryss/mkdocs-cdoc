@@ -55,6 +55,14 @@ def test_struct_parsing_logic():
     finally:
         if os.path.exists("temp_struct.h"): os.remove("temp_struct.h")
 
+# TC-006: Edge Case - Junk Comment Cleaning
+def test_junk_comment_cleaning():
+    """Ensure the cleaner handles complex comment decorations."""
+    junk_comment = "/***********\n * IMPORTANT\n ***********/"
+    cleaned = clean_comment(junk_comment)
+    assert "IMPORTANT" in cleaned
+
+
 # Integration Style Test: Parsing a sample C++ string
 def test_regex_parser_logic():
     """Test the regex backend's ability to extract function signatures and names."""
